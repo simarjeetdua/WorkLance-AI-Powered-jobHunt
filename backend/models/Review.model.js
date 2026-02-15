@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
-const applicationSchema = new Schema(
+const reviewSchema = new Schema(
   {
     job: {
       type: Schema.Types.ObjectId,
@@ -10,21 +10,28 @@ const applicationSchema = new Schema(
       required: true,
     },
 
-    freelancer: {
+    reviewer: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    proposal: {
-      type: String,
+    reviewee: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
 
-    status: {
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
+
+    comment: {
       type: String,
-      enum: ["pending", "accepted", "rejected"],
-      default: "pending",
+      default: "",
     },
   },
   {
@@ -32,4 +39,4 @@ const applicationSchema = new Schema(
   }
 );
 
-export default model("Application", applicationSchema);
+export default model("Review", reviewSchema);

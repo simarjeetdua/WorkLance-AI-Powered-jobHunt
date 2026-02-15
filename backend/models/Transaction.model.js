@@ -2,29 +2,29 @@ import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
-const applicationSchema = new Schema(
+const transactionSchema = new Schema(
   {
-    job: {
+    escrow: {
       type: Schema.Types.ObjectId,
-      ref: "Job",
+      ref: "Escrow",
       required: true,
     },
 
-    freelancer: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+    amount: {
+      type: Number,
       required: true,
     },
 
-    proposal: {
+    paymentMethod: {
       type: String,
+      enum: ["card", "upi", "netbanking"],
       required: true,
     },
 
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected"],
-      default: "pending",
+      enum: ["success", "failed"],
+      required: true,
     },
   },
   {
@@ -32,4 +32,4 @@ const applicationSchema = new Schema(
   }
 );
 
-export default model("Application", applicationSchema);
+export default model("Transaction", transactionSchema);

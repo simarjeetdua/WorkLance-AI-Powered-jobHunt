@@ -2,11 +2,17 @@ import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
-const applicationSchema = new Schema(
+const escrowSchema = new Schema(
   {
     job: {
       type: Schema.Types.ObjectId,
       ref: "Job",
+      required: true,
+    },
+
+    client: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
 
@@ -16,15 +22,15 @@ const applicationSchema = new Schema(
       required: true,
     },
 
-    proposal: {
-      type: String,
+    amount: {
+      type: Number,
       required: true,
     },
 
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected"],
-      default: "pending",
+      enum: ["held", "released", "refunded"],
+      default: "held",
     },
   },
   {
@@ -32,4 +38,4 @@ const applicationSchema = new Schema(
   }
 );
 
-export default model("Application", applicationSchema);
+export default model("Escrow", escrowSchema);
