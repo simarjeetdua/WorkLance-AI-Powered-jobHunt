@@ -1,16 +1,97 @@
-# React + Vite
+# WorkLance — AI-Powered Freelancing Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium, production-grade React frontend for an AI-powered freelancing platform, built with modern tooling and stunning animations.
 
-Currently, two official plugins are available:
+## 🚀 Quick Start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+Open http://localhost:5173
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🏗️ Tech Stack
 
-## Expanding the ESLint configuration
+| Tool | Purpose |
+|------|---------|
+| **React 18 + Vite** | Framework & build tool |
+| **Tailwind CSS** | Utility-first styling |
+| **Framer Motion** | Smooth animations |
+| **Axios** | API communication |
+| **React Router v6** | Client-side routing |
+| **Recharts** | Analytics charts |
+| **react-hot-toast** | Toast notifications |
+| **lucide-react** | Icons |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📁 Project Structure
+
+```
+src/
+├── components/
+│   ├── layout/         # Navbar, Sidebar, Footer
+│   ├── shared/         # JobCard, ApplicationCard, ReviewCard, ProtectedRoute
+│   └── ui/             # Avatar, Badge, Modal, Skeleton, StatCard, StarRating
+├── context/
+│   ├── AuthContext.jsx # JWT auth state
+│   └── ThemeContext.jsx# Dark/light toggle
+├── hooks/
+│   └── useAsync.js     # useAsync, useMutation, useDebounce, useLocalStorage
+├── layouts/
+│   ├── DashboardLayout.jsx
+│   └── PublicLayout.jsx
+├── pages/
+│   ├── LandingPage.jsx
+│   ├── auth/           # Login, Register
+│   ├── dashboard/      # Role-based dashboards, Applications, MyJobs, Recommendations
+│   ├── jobs/           # JobsPage, JobDetailPage, PostJobPage
+│   ├── profile/        # ProfilePage (editable)
+│   ├── escrow/         # EscrowPage
+│   ├── reviews/        # ReviewsPage
+│   └── admin/          # AdminUsersPage, AnalyticsPage
+├── services/
+│   └── api.js          # All Axios API calls, interceptors
+└── utils/
+    └── helpers.js      # formatCurrency, timeAgo, getInitials, etc.
+```
+
+## 🔐 Auth Flow
+
+1. User registers/logs in → JWT returned from `/auth/login`
+2. Token stored in `localStorage` as `wl_token`
+3. Axios interceptor attaches `Authorization: Bearer <token>` to every request
+4. `AuthContext` exposes `user`, `login`, `logout`, `register`
+5. `ProtectedRoute` wraps private routes; redirects to `/login` if unauthenticated
+6. Role-based access: `roles={['admin']}` prop restricts by user role
+
+## 🎭 Roles
+
+| Role | Dashboard | Can Do |
+|------|-----------|--------|
+| `freelancer` | FreelancerDashboard | Browse jobs, apply, AI recommendations, profile |
+| `client` | ClientDashboard | Post jobs, view applications, manage listings |
+| `admin` | AdminDashboard | User management, analytics, job moderation |
+
+## 🔌 API Base URL
+
+Set in `src/services/api.js`:
+```js
+const API = axios.create({ baseURL: 'http://localhost:5000/api' })
+```
+
+Change to your backend URL before deploying.
+
+## ✨ Design System
+
+- **Colors**: Deep dark (`#0a0f1a`) base, emerald brand (`#25a36b`), cyan accent
+- **Typography**: Clash Display (headings) + Satoshi (body) + JetBrains Mono (code)
+- **Components**: glassmorphism cards, gradient buttons, animated sidebar
+- **Motion**: Page transitions, staggered list reveals, hover micro-interactions
+- **Themes**: Dark mode default, light mode via ThemeContext toggle
+
+## 📦 Build for Production
+
+```bash
+npm run build
+npm run preview
+```
