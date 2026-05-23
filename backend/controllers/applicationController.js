@@ -77,7 +77,7 @@ export const getJobApplications = async (req, res) => {
     const { jobId } = req.params;
 
     const applications = await Application.find({ job: jobId })
-      .populate("freelancer", "username email role")
+      .populate("freelancer", "username name email role avatar")
       .populate("job", "title budget")
       .sort({ createdAt: -1 });
 
@@ -107,7 +107,7 @@ export const getClientApplications = async (req, res) => {
         match: { client: req.user.id }, // only client jobs
         select: "title budget client",
       })
-      .populate("freelancer", "username email role")
+      .populate("freelancer", "username name email role avatar")
       .sort({ createdAt: -1 });
 
     // remove null jobs

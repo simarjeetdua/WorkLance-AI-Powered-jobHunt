@@ -193,9 +193,9 @@ export default function JobDetailPage() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }} className="glass-card p-6">
                 <h3 className="font-semibold text-white mb-4 text-sm">About the Client</h3>
                 <div className="flex items-center gap-3 mb-4">
-                  <Avatar name={job.client.name} size="md" />
+                  <Avatar name={job.client.name || job.client.username} src={job.client.avatar} size="md" />
                   <div>
-                    <p className="font-semibold text-white text-sm">{job.client.name}</p>
+                    <p className="font-semibold text-white text-sm">{job.client.name || job.client.username}</p>
                     <div className="flex items-center gap-1 text-yellow-400 text-xs">
                       <Star size={11} fill="currentColor" />
                       <span className="font-semibold">4.8</span>

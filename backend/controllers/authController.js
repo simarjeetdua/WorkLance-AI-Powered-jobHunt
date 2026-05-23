@@ -24,8 +24,9 @@ export const registerUser = async (req, res) => {
 
     const { username, name, email, password, role } = req.body;
 
-    // ✅ Support both username & name
+    // Support both username & name
     const finalUsername = username || name;
+    const finalName = name || username;
 
     // ✅ Validate input
     if (!finalUsername || !email || !password) {
@@ -54,6 +55,7 @@ export const registerUser = async (req, res) => {
     // ✅ Create user
     const user = await User.create({
       username: finalUsername,
+      name: finalName,
       email,
       password: hashedPass,
       role: finalRole,
@@ -69,8 +71,10 @@ export const registerUser = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
+        name: user.name || user.username,
         email: user.email,
         role: user.role,
+        avatar: user.avatar || "",
       },
     });
 
@@ -137,8 +141,10 @@ export const loginUser = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
+        name: user.name || user.username,
         email: user.email,
         role: user.role,
+        avatar: user.avatar || "",
       },
     });
 

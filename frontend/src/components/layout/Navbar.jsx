@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
-import { getInitials } from '../../utils/helpers'
+import { Avatar } from '../ui/index'
 import { Sun, Moon, Menu, X, Zap, Bell, ChevronDown, LogOut, User, LayoutDashboard } from 'lucide-react'
 
 export default function Navbar() {
@@ -94,10 +94,8 @@ export default function Navbar() {
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center gap-2 p-1 pr-3 rounded-full bg-white/5 border border-white/10 hover:border-brand-500/40 transition-all duration-200"
                   >
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center text-xs font-bold text-white">
-                      {getInitials(user.name)}
-                    </div>
-                    <span className="hidden md:block text-sm font-medium text-white/80">{user.name?.split(' ')[0]}</span>
+                    <Avatar name={user.name || user.username} src={user.avatar} size="sm" />
+                    <span className="hidden md:block text-sm font-medium text-white/80">{(user.name || user.username)?.split(' ')[0]}</span>
                     <ChevronDown size={14} className={`text-white/40 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
@@ -112,7 +110,7 @@ export default function Navbar() {
                         onMouseLeave={() => setDropdownOpen(false)}
                       >
                         <div className="px-4 py-3 border-b border-white/5">
-                          <p className="text-sm font-semibold text-white">{user.name}</p>
+                          <p className="text-sm font-semibold text-white">{user.name || user.username}</p>
                           <p className="text-xs text-white/40 capitalize">{user.role}</p>
                         </div>
                         <Link to="/dashboard" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all">

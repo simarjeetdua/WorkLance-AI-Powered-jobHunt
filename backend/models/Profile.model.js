@@ -25,6 +25,26 @@ const ProfileSchema = new mongoose.Schema({
     hourlyRate: {
         type: Number,
         default: 0,
+    },
+    tagline: {
+        type: String,
+        default: ""
+    },
+    location: {
+        type: String,
+        default: ""
+    },
+    website: {
+        type: String,
+        default: ""
+    },
+    github: {
+        type: String,
+        default: ""
+    },
+    linkedin: {
+        type: String,
+        default: ""
     }
 },
 {

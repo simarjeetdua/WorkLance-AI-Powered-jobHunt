@@ -58,6 +58,26 @@ export const profileAPI = {
   delete: () => API.delete('/profile'),
 }
 
+/* ───────── PORTFOLIO ───────── */
+export const portfolioAPI = {
+  create: async (data) => {
+    const res = await API.post('/portfolio', data)
+    return res.portfolio
+  },
+
+  getByUser: async (userId) => {
+    const res = await API.get(`/portfolio/${userId}`)
+    return res.portfolio || []
+  },
+
+  update: async (id, data) => {
+    const res = await API.put(`/portfolio/${id}`, data)
+    return res.portfolio
+  },
+
+  delete: (id) => API.delete(`/portfolio/${id}`),
+}
+
 /* ───────── JOBS ───────── */
 export const jobsAPI = {
   create: async (data) => {

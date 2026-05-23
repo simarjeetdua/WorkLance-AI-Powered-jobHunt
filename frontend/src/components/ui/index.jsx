@@ -28,11 +28,21 @@ export function CardSkeleton() {
 }
 
 // ── Avatar ──────────────────────────────────────────────
-export function Avatar({ name, size = 'md', className = '' }) {
+export function Avatar({ name, src, size = 'md', isOnline = false, className = '' }) {
   const sizes = { sm: 'w-7 h-7 text-xs', md: 'w-10 h-10 text-sm', lg: 'w-14 h-14 text-base', xl: 'w-20 h-20 text-xl' }
+  const dotSizes = { sm: 'h-2 w-2 ring-1', md: 'h-2.5 w-2.5 ring-2', lg: 'h-3 w-3 ring-2', xl: 'h-4 w-4 ring-2' }
   return (
-    <div className={`${sizes[size]} rounded-full bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center font-bold text-white flex-shrink-0 ${className}`}>
-      {getInitials(name)}
+    <div className="relative inline-block flex-shrink-0">
+      <div className={`${sizes[size]} rounded-full bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center font-bold text-white overflow-hidden ${className}`}>
+        {src ? (
+          <img src={src} alt={name || 'User'} className="w-full h-full object-cover" />
+        ) : (
+          getInitials(name || 'User')
+        )}
+      </div>
+      {isOnline && (
+        <span className={`absolute bottom-0 right-0 block rounded-full bg-brand-400 ring-surface-dark animate-pulse ${dotSizes[size]}`} />
+      )}
     </div>
   )
 }

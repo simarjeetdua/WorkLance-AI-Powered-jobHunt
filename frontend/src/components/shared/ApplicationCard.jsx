@@ -75,10 +75,10 @@ export default function ApplicationCard({ application, isClient = false, onUpdat
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3 min-w-0">
-          <Avatar name={person?.name || person?.title || '?'} size="sm" />
+          <Avatar name={person?.name || person?.username || person?.title || '?'} src={person?.avatar} size="sm" />
           <div className="min-w-0">
             <p className="font-semibold text-white text-sm truncate">
-              {isClient ? person?.name : person?.title}
+              {isClient ? (person?.name || person?.username) : person?.title}
             </p>
             <p className="text-xs text-white/40 mt-0.5">
               {isClient ? person?.email : `Posted ${timeAgo(application.createdAt)}`}

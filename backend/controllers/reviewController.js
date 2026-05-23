@@ -88,7 +88,7 @@ export const getUserReviews = async (req, res) => {
     const reviews = await Review.find({
       reviewee: req.params.userId,
     })
-      .populate("reviewer", "username role")
+      .populate("reviewer", "username name role avatar")
       .populate("job", "title")
       .sort({ createdAt: -1 });
 

@@ -8,12 +8,14 @@ import { timeAgo } from '../../utils/helpers'
 import API from '../../services/api'
 
 export default function AdminUsersPage() {
-  const { data: users, loading } = useAsync(() => API.get('/users'))
+  const { data: users, loading } = useAsync(() => API.get('/admin/users'))
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState('all')
 
-  const filtered = (users || []).filter(u => {
-    const matchSearch = u.name?.toLowerCase().includes(search.toLowerCase()) ||
+  const usersList = Array.isArray(users) ? users : (users?.getUsers || [])
+  const filtered = usersList.filter(u => {
+    const nameToSearch = u.name || u.username || ''
+    const matchSearch = nameToSearch.toLowerCase().includes(search.toLowerCase()) ||
                         u.email?.toLowerCase().includes(search.toLowerCase())
     const matchRole = roleFilter === 'all' || u.role === roleFilter
     return matchSearch && matchRole
@@ -23,7 +25,7 @@ export default function AdminUsersPage() {
 
   return (
     <DashboardLayout>
-      <PageHeader title="User Management" subtitle={`${users?.length || 0} registered users`} />
+      <PageHeader title="User Management" subtitle={`${usersList.length} registered users`} />
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
@@ -72,9 +74,9 @@ export default function AdminUsersPage() {
                         transition={{ delay: i * 0.04 }} className="hover:bg-white/2 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <Avatar name={user.name} size="sm" />
+                            <Avatar name={user.name || user.username} src={user.avatar} size="sm" />
                             <div>
-                              <p className="font-semibold text-white text-sm">{user.name}</p>
+                              <p className="font-semibold text-white text-sm">{user.name || user.username}</p>
                               <p className="text-xs text-white/40">{user.email}</p>
                             </div>
                           </div>

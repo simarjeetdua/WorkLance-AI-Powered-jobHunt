@@ -197,8 +197,8 @@ export const getEscrowByJob = async (req, res) => {
     const escrow = await Escrow.findOne({
       job: req.params.jobId,
     })
-      .populate("client", "username email")
-      .populate("freelancer", "username email");
+      .populate("client", "username name email role avatar")
+      .populate("freelancer", "username name email role avatar");
 
     if (!escrow) {
       return res.status(404).json({
@@ -233,8 +233,8 @@ export const getMyEscrows = async (req, res) => {
       ],
     })
       .populate("job", "title")
-      .populate("client", "username")
-      .populate("freelancer", "username")
+      .populate("client", "username name role avatar")
+      .populate("freelancer", "username name role avatar")
       .sort({ createdAt: -1 });
 
     res.status(200).json({

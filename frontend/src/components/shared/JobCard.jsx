@@ -22,7 +22,7 @@ export default function JobCard({ job, index = 0, showStatus = false }) {
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-start gap-3 min-w-0">
-            <Avatar name={job.client?.name || 'Client'} size="sm" className="mt-0.5 flex-shrink-0" />
+            <Avatar name={job.client?.name || job.client?.username || 'Client'} src={job.client?.avatar} size="sm" className="mt-0.5 flex-shrink-0" />
             <div className="min-w-0">
               <Link
                 to={`/jobs/${job._id}`}
@@ -30,7 +30,7 @@ export default function JobCard({ job, index = 0, showStatus = false }) {
               >
                 {job.title}
               </Link>
-              <p className="text-xs text-white/40 mt-0.5">{job.client?.name || 'Anonymous'}</p>
+              <p className="text-xs text-white/40 mt-0.5">{job.client?.name || job.client?.username || 'Anonymous'}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">

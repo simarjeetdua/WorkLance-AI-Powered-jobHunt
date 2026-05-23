@@ -67,7 +67,7 @@ export const getAllJobs = async (req, res) => {
     }
 
     const jobs = await Job.find(query)
-      .populate("client", "username email role") // ✅ FIXED
+      .populate("client", "username name email role avatar") // ✅ FIXED
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -92,7 +92,7 @@ export const getAllJobs = async (req, res) => {
 export const getSingleJob = async (req, res) => {
   try {
     const job = await Job.findById(req.params.id)
-      .populate("client", "username email role"); // ✅ FIXED
+      .populate("client", "username name email role avatar"); // ✅ FIXED
 
     if (!job) {
       return res.status(404).json({

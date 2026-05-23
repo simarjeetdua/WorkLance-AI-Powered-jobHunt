@@ -76,7 +76,7 @@ export const UserStatus = async(req,res)=>{
 //get all jobs
 export const GetAllJobs = async(req,res)=>{
     try {
-        const jobs = await job.find.populate('client', 'name email');
+        const jobs = await job.find().populate('client', 'username name email role avatar');
         res.status(200).json({
             success: true,
             message: 'jobs fetched successfully',
