@@ -40,17 +40,48 @@ const escrowSchema = new Schema(
       min: 1,
     },
 
-    // 📊 Status (FIXED naming)
+    // 📊 Status (detailed escrow states)
     status: {
       type: String,
-      enum: ["funded", "released", "refunded"],
-      default: "funded",
+      enum: [
+        "payment_pending",
+        "held_in_escrow",
+        "funded", // backwards compatibility
+        "work_submitted",
+        "client_review_pending",
+        "released",
+        "refunded",
+        "disputed"
+      ],
+      default: "payment_pending",
     },
 
     // 🧾 Optional note
     note: {
       type: String,
       default: "",
+    },
+
+    // 📂 Work Submission Info
+    workNotes: {
+      type: String,
+      default: "",
+    },
+    workAttachment: {
+      type: String,
+      default: "",
+    },
+    submittedAt: {
+      type: Date,
+    },
+
+    // ⚠️ Dispute details
+    disputeReason: {
+      type: String,
+      default: "",
+    },
+    disputedAt: {
+      type: Date,
     },
 
     // 🕒 Payment timestamps

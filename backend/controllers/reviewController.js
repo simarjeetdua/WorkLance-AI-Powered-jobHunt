@@ -1,5 +1,6 @@
 import Review from "../models/Review.model.js";
 import Job from "../models/Job.model.js";
+import Application from "../models/Application.model.js";
 
 /**
  * Create Review
@@ -58,10 +59,29 @@ export const createReview = async (req, res) => {
       });
     }
 
+    let finalRevieweeId = revieweeId;
+    if (!finalRevieweeId) {
+      // Find who the other party was on this job
+      if (job.client.toString() === req.user.id) {
+        // Hired freelancer
+        const app = await Application.findOne({ job: jobId, status: "hired" });
+        if (app) {
+          finalRevieweeId = app.freelancer.toString();
+        } else {
+          // fallback to any application for this job
+          const anyApp = await Application.findOne({ job: jobId });
+          if (anyApp) finalRevieweeId = anyApp.freelancer.toString();
+        }
+      } else {
+        // Reviewee is client
+        finalRevieweeId = job.client.toString();
+      }
+    }
+
     const review = await Review.create({
       job: jobId,
       reviewer: req.user.id,
-      reviewee: revieweeId || null,
+      reviewee: finalRevieweeId || null,
       rating,
       comment,
     });

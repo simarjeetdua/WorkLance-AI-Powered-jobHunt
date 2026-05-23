@@ -5,7 +5,7 @@ import Portfolio from "../models/Portfolio.model.js";
  */
 export const createPortfolio = async (req, res) => {
   try {
-    const { title, description, projectLink, image } = req.body;
+    const { title, description, projectLink, image, skillsUsed } = req.body;
 
     const portfolio = await Portfolio.create({
       user: req.user.id,
@@ -13,6 +13,7 @@ export const createPortfolio = async (req, res) => {
       description,
       projectLink,
       image,
+      skillsUsed,
     });
 
     res.status(201).json({
@@ -97,12 +98,13 @@ export const updatePortfolio = async (req, res) => {
       });
     }
 
-    const { title, description, projectLink, image } = req.body;
+    const { title, description, projectLink, image, skillsUsed } = req.body;
 
     portfolio.title = title || portfolio.title;
     portfolio.description = description || portfolio.description;
     portfolio.projectLink = projectLink || portfolio.projectLink;
     portfolio.image = image || portfolio.image;
+    portfolio.skillsUsed = skillsUsed || portfolio.skillsUsed;
 
     await portfolio.save();
 

@@ -17,6 +17,7 @@ import JobsPage from './pages/jobs/JobsPage'
 import JobDetailPage from './pages/jobs/JobDetailPage'
 import PostJobPage from './pages/jobs/PostJobPage'
 import ProfilePage from './pages/profile/ProfilePage'
+import FreelancersPage from './pages/FreelancersPage'
 import EscrowPage from './pages/escrow/EscrowPage'
 import ReviewsPage from './pages/reviews/ReviewsPage'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
@@ -52,6 +53,7 @@ export default function App() {
               <Route path="/register"  element={<RegisterPage />} />
               <Route path="/jobs"      element={<JobsPage />} />
               <Route path="/jobs/:id"  element={<JobDetailPage />} />
+              <Route path="/freelancers" element={<FreelancersPage />} />
               <Route path="/profile/:userId" element={<ProfilePage />} />
 
               {/* Any auth */}

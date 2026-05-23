@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ================= THEME DESIGN SYSTEM ================= */
+:root {
+  /* Default: Light theme variables */
+  --bg-color: #f6f8fb;
+  --text-color: #1e293b;
+  --text-muted: rgba(30, 41, 59, 0.6);
+  --card-bg-start: rgba(255, 255, 255, 0.85);
+  --card-bg-end: rgba(248, 250, 252, 0.95);
+  --border-color: rgba(30, 41, 59, 0.08);
+  --nav-bg: rgba(246, 248, 251, 0.85);
+  
+  --sidebar-bg: #ffffff;
+  --sidebar-border: rgba(30, 41, 59, 0.08);
+  
+  --glow-opacity: 0.05;
+  --mesh-bg-1: hsla(158, 68%, 28%, 0.06);
+  --mesh-bg-2: hsla(189, 100%, 56%, 0.04);
+}
+
+.dark {
+  /* Dark theme variables */
+  --bg-color: #0a0f1a;
+  --text-color: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.4);
+  --card-bg-start: rgba(255, 255, 255, 0.08);
+  --card-bg-end: rgba(255, 255, 255, 0.03);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --nav-bg: rgba(10, 15, 26, 0.85);
+  
+  --sidebar-bg: #0f1724;
+  --sidebar-border: #1e2d3d;
+  
+  --glow-opacity: 0.15;
+  --mesh-bg-1: hsla(158, 68%, 28%, 0.15);
+  --mesh-bg-2: hsla(189, 100%, 56%, 0.07);
+}
+
 /* ================= BASE ================= */
 @layer base {
   :root {
@@ -15,18 +52,22 @@
 
   html {
     scroll-behavior: smooth;
+    transition: background-color 0.3s ease;
   }
 
   body {
-    @apply bg-surface-dark text-white font-body antialiased;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    @apply font-body antialiased;
     background-image:
-      radial-gradient(at 40% 20%, hsla(158,68%,28%,0.15) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsla(189,100%,56%,0.07) 0px, transparent 50%);
+      radial-gradient(at 40% 20%, var(--mesh-bg-1) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, var(--mesh-bg-2) 0px, transparent 50%);
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease;
   }
 
   ::selection {
-    @apply bg-brand-500/30 text-brand-100;
+    @apply bg-brand-500/30 text-brand-500 dark:text-brand-100;
   }
 
   ::-webkit-scrollbar {
@@ -35,11 +76,11 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-surface-dark;
+    background: var(--bg-color);
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-brand-700 rounded-full;
+    @apply bg-brand-600/30 dark:bg-brand-700 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -51,43 +92,71 @@
 @layer components {
 
   .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+    background: var(--card-bg-start);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
   }
 
   .glass-card {
-    @apply bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/10 rounded-2xl;
+    background: linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end));
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   }
 
   .glass-card-hover {
-    @apply glass-card transition-all duration-300 hover:border-brand-500/40 hover:shadow-[0_0_30px_rgba(37,163,107,0.1)] hover:-translate-y-1;
+    @apply glass-card;
+  }
+  .glass-card-hover:hover {
+    border-color: rgba(37, 163, 107, 0.4);
+    box-shadow: 0 10px 30px rgba(37, 163, 107, var(--glow-opacity));
+    transform: translateY(-2px);
   }
 
   .btn-primary {
     @apply bg-gradient-to-r from-brand-500 to-brand-400 text-white font-semibold px-6 py-3 rounded-xl
            hover:from-brand-400 hover:to-brand-300 transition-all duration-300
-           shadow-[0_0_20px_rgba(37,163,107,0.3)] hover:shadow-[0_0_30px_rgba(37,163,107,0.5)]
+           shadow-[0_4px_20px_rgba(37,163,107,0.25)] hover:shadow-[0_6px_25px_rgba(37,163,107,0.45)]
            active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
-    @apply bg-white/5 border border-white/10 text-white font-semibold px-6 py-3 rounded-xl
-           hover:bg-white/10 hover:border-brand-500/40 transition-all duration-300
-           active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+    background: var(--card-bg-start);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    @apply font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:bg-brand-500/10 hover:border-brand-500/40 active:scale-95 disabled:opacity-50;
   }
 
   .btn-ghost {
-    @apply text-white/70 font-medium px-4 py-2 rounded-lg
-           hover:text-white hover:bg-white/5 transition-all duration-200;
+    color: var(--text-color);
+    opacity: 0.8;
+    @apply font-medium px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-100 hover:bg-brand-500/10;
   }
 
   .input-field {
-    @apply w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30
-           focus:outline-none focus:border-brand-500/60 focus:bg-white/10 focus:ring-1 focus:ring-brand-500/30
-           transition-all duration-200;
+    width: 100%;
+    background: var(--card-bg-start);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+  }
+  .input-field::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: rgba(37, 163, 107, 0.6);
+    background: var(--card-bg-end);
+    box-shadow: 0 0 10px rgba(37, 163, 107, 0.15);
   }
 
   .label {
-    @apply block text-sm font-medium text-white/60 mb-2;
+    @apply block text-sm font-medium mb-2;
+    color: var(--text-muted);
   }
 
   .badge {
@@ -99,34 +168,38 @@
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-brand-400 to-cyan-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-brand-500 to-cyan-500 dark:from-brand-400 dark:to-cyan-400 bg-clip-text text-transparent;
   }
 
   .skeleton {
-    @apply bg-white/5 rounded-lg animate-pulse;
+    border-radius: 0.5rem;
+    animation: shimmer 1.5s infinite;
     background: linear-gradient(
       90deg,
-      rgba(255,255,255,0.03) 25%,
-      rgba(255,255,255,0.08) 50%,
-      rgba(255,255,255,0.03) 75%
+      rgba(150, 150, 150, 0.05) 25%,
+      rgba(150, 150, 150, 0.12) 50%,
+      rgba(150, 150, 150, 0.05) 75%
     );
     background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
   }
 
   .nav-link {
-    @apply text-white/60 hover:text-white font-medium transition-colors duration-200 relative
+    color: var(--text-color);
+    opacity: 0.7;
+    @apply font-medium transition-all duration-200 relative hover:opacity-100
            after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-400
            after:transition-all after:duration-300 hover:after:w-full;
   }
 
   .sidebar-link {
-    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/10
-           transition-all duration-200 font-medium cursor-pointer;
+    color: var(--text-color);
+    opacity: 0.7;
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium cursor-pointer hover:opacity-100 hover:bg-brand-500/10;
   }
 
   .sidebar-link.active {
-    @apply text-brand-400 bg-brand-500/10 border border-brand-500/20;
+    opacity: 1;
+    @apply text-brand-600 dark:text-brand-400 bg-brand-500/10 border border-brand-500/20;
   }
 
   .stat-card {
@@ -134,15 +207,14 @@
   }
 
   .tag {
-    @apply px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/15 text-brand-400 border border-brand-500/20;
+    @apply px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/15 text-brand-600 dark:text-brand-400 border border-brand-500/20;
   }
 }
 
 /* ================= UTILITIES ================= */
 @layer utilities {
-
   .text-glow {
-    text-shadow: 0 0 20px rgba(37, 163, 107, 0.5);
+    text-shadow: 0 0 20px rgba(37, 163, 107, 0.4);
   }
 
   .border-glow {

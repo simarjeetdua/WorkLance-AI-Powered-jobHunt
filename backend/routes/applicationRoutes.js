@@ -4,13 +4,17 @@ import {
   getJobApplications,
   getClientApplications,
   updateApplicationStatus,
-  getMyApplications
+  getMyApplications,
+  hireProposeFreelancer
 } from '../controllers/applicationController.js';
 
 import { protect } from '../middleware/authMiddleware.js';
 import { authorizeRoles } from '../middleware/roleMiddleware.js';
 
 const router = express.Router();
+
+// ✅ CLIENT INITIATE HIRE / PROPOSAL
+router.post('/hire-propose', protect, authorizeRoles('client'), hireProposeFreelancer);
 
 // ✅ APPLY
 router.post('/:jobId/apply', protect, authorizeRoles('freelancer'), applyForJob);

@@ -17,14 +17,25 @@ const transactionSchema = new Schema(
 
     paymentMethod: {
       type: String,
-      enum: ["card", "upi", "netbanking"],
+      enum: ["card", "upi", "qr", "netbanking"],
       required: true,
     },
 
     status: {
       type: String,
-      enum: ["success", "failed"],
+      enum: ["success", "failed", "pending"],
       required: true,
+    },
+
+    transactionId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+
+    receiptUrl: {
+      type: String,
+      default: "",
     },
   },
   {

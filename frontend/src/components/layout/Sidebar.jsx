@@ -35,10 +35,9 @@ const adminLinks = [
   { icon: BarChart2, label: 'Analytics', href: '/dashboard/analytics' },
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ collapsed, setCollapsed }) {
   const { user, logout } = useAuth()
   const location = useLocation()
-  const [collapsed, setCollapsed] = useState(false)
 
   const links =
     user?.role === 'admin' ? adminLinks :
@@ -49,18 +48,18 @@ export default function Sidebar() {
     <motion.aside
       animate={{ width: collapsed ? 72 : 256 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed left-0 top-16 bottom-0 z-40 flex flex-col bg-surface-card border-r border-surface-border overflow-hidden"
+      className="fixed left-0 top-16 bottom-0 z-40 flex flex-col bg-[var(--sidebar-bg)] border-r border-[var(--sidebar-border)] overflow-hidden"
     >
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-6 z-50 w-6 h-6 rounded-full bg-surface-card border border-surface-border flex items-center justify-center text-white/40 hover:text-white hover:border-brand-500/40 transition-all"
+        className="absolute -right-3 top-6 z-50 w-6 h-6 rounded-full bg-[var(--sidebar-bg)] border border-[var(--sidebar-border)] flex items-center justify-center text-[var(--text-color)]/40 hover:text-[var(--text-color)] hover:border-brand-500/40 transition-all"
       >
         {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
       </button>
 
       {/* User mini-profile */}
-      <div className={`p-4 border-b border-surface-border ${collapsed ? 'items-center' : ''} flex gap-3`}>
+      <div className={`p-4 border-b border-[var(--sidebar-border)] ${collapsed ? 'items-center' : ''} flex gap-3`}>
         <div className="w-9 h-9 min-w-[36px] rounded-xl bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center text-sm font-bold text-white shadow-[0_0_15px_rgba(37,163,107,0.3)]">
           {getInitials(user?.name)}
         </div>
@@ -72,8 +71,8 @@ export default function Sidebar() {
               exit={{ opacity: 0, width: 0 }}
               className="overflow-hidden min-w-0"
             >
-              <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
-              <p className="text-xs text-white/40 capitalize">{user?.role}</p>
+              <p className="text-sm font-semibold text-[var(--text-color)] truncate">{user?.name}</p>
+              <p className="text-xs text-[var(--text-color)]/60 capitalize">{user?.role}</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -90,7 +89,7 @@ export default function Sidebar() {
               className={`sidebar-link ${active ? 'active' : ''} ${collapsed ? 'justify-center px-0' : ''}`}
               title={collapsed ? label : undefined}
             >
-              <Icon size={18} className={active ? 'text-brand-400' : ''} />
+              <Icon size={18} className={active ? 'text-brand-600 dark:text-brand-400' : 'text-[var(--text-color)]/70'} />
               <AnimatePresence>
                 {!collapsed && (
                   <motion.span
@@ -106,7 +105,7 @@ export default function Sidebar() {
               {active && (
                 <motion.div
                   layoutId="sidebar-indicator"
-                  className="absolute right-3 w-1.5 h-1.5 rounded-full bg-brand-400"
+                  className="absolute right-3 w-1.5 h-1.5 rounded-full bg-brand-500"
                 />
               )}
             </Link>
@@ -115,7 +114,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom */}
-      <div className="p-3 border-t border-surface-border space-y-1">
+      <div className="p-3 border-t border-[var(--sidebar-border)] space-y-1">
         <Link to="/settings" className={`sidebar-link ${collapsed ? 'justify-center px-0' : ''}`}>
           <Settings size={18} />
           <AnimatePresence>

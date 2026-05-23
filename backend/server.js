@@ -16,6 +16,8 @@ import escrowRoutes from "./routes/escrowRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import recommendationRoutes from "./routes/recommendationRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 // ==============================
 // IMPORT MIDDLEWARE
@@ -63,6 +65,8 @@ app.use("/api/escrow", escrowRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/recommendations", recommendationRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // ==============================
 // HEALTH CHECK ROUTE

@@ -50,6 +50,10 @@ const portfolioSchema = new Schema(
         type: String,
       },
     ],
+    image: {
+      type: String,
+      default: "",
+    },
 
     // Whether project is featured
     isFeatured: {

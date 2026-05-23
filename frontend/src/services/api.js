@@ -56,6 +56,11 @@ export const profileAPI = {
   },
 
   delete: () => API.delete('/profile'),
+
+  getAllFreelancers: async (params) => {
+    const res = await API.get('/profile/marketplace/freelancers', { params })
+    return res
+  },
 }
 
 /* ───────── PORTFOLIO ───────── */
@@ -133,16 +138,19 @@ apply: async (data) => {
     return res.applications || []
   },
 
+  // ✅ CLIENT INITIATE HIRE / PROPOSAL
+  hirePropose: (data) => API.post('/applications/hire-propose', data),
+
   // ✅ FREELANCER
   mine: async () => {
     const res = await API.get('/applications/me')
     return res.applications || []
   },
 
- update: async (id, data) => {
-  const res = await API.put(`/applications/${id}/status`, data)
-  return res.application
-},
+  update: async (id, data) => {
+    const res = await API.put(`/applications/${id}/status`, data)
+    return res.application
+  },
 }
 
 /* ───────── ESCROW ───────── */
@@ -155,6 +163,14 @@ export const escrowAPI = {
   release: (id) => API.post(`/escrow/${id}/release`),
 
   refund: (id) => API.post(`/escrow/${id}/refund`),
+
+  submitWork: (id, data) => API.post(`/escrow/${id}/submit`, data),
+
+  reviewWork: (id, data) => API.post(`/escrow/${id}/review`, data),
+
+  dispute: (id, data) => API.post(`/escrow/${id}/dispute`, data),
+
+  transactions: () => API.get('/escrow/transactions'),
 
   byJob: async (jobId) => {
     const res = await API.get(`/escrow/${jobId}`)
@@ -208,6 +224,20 @@ export const analyticsAPI = {
     const res = await API.get('/analytics/dashboard')
     return res.analytics
   },
+}
+
+/* ───────── PAYMENTS ───────── */
+export const paymentAPI = {
+  initiate: (data) => API.post('/payments/initiate', data),
+  verify: (data) => API.post('/payments/verify', data),
+}
+
+/* ───────── NOTIFICATIONS ───────── */
+export const notificationsAPI = {
+  mine: () => API.get('/notifications/me'),
+  markRead: (id) => API.put(`/notifications/${id}/read`),
+  markAllRead: () => API.put('/notifications/mark-all'),
+  delete: (id) => API.delete(`/notifications/${id}`),
 }
 
 export default API

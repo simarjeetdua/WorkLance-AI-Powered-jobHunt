@@ -18,8 +18,12 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      const user = await authAPI.me() // ✅ FIXED
-      setUser(user)
+      const u = await authAPI.me();
+      if (u) {
+        u.id = u.id || u._id;
+        u._id = u._id || u.id;
+      }
+      setUser(u);
     } catch (err) {
       console.error("FETCH USER ERROR:", err)
       localStorage.removeItem('wl_token')
@@ -38,9 +42,14 @@ export function AuthProvider({ children }) {
       const res = await authAPI.login(credentials) // ✅ FIXED
 
       localStorage.setItem('wl_token', res.token)
-      setUser(res.user)
+      const u = res.user;
+      if (u) {
+        u.id = u.id || u._id;
+        u._id = u._id || u.id;
+      }
+      setUser(u)
 
-      return res.user
+      return u
     } catch (err) {
       console.error("LOGIN ERROR:", err)
       toast.error(err.message || "Login failed")
@@ -54,9 +63,14 @@ export function AuthProvider({ children }) {
       const res = await authAPI.register(credentials) // ✅ FIXED
 
       localStorage.setItem('wl_token', res.token)
-      setUser(res.user)
+      const u = res.user;
+      if (u) {
+        u.id = u.id || u._id;
+        u._id = u._id || u.id;
+      }
+      setUser(u)
 
-      return res.user
+      return u
     } catch (err) {
       console.error("REGISTER ERROR:", err)
       toast.error(err.message || "Registration failed")

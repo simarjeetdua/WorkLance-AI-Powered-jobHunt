@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../context/AuthContext'
 import { useAsync, useMutation } from '../../hooks/useAsync'
-import { profileAPI, reviewsAPI, portfolioAPI } from '../../services/api'
+import { profileAPI, reviewsAPI, portfolioAPI, applicationsAPI } from '../../services/api'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import PublicLayout from '../../layouts/PublicLayout'
 import { Avatar, StarRating, PageHeader, Skeleton, EmptyState, Modal } from '../../components/ui/index'
@@ -11,7 +11,8 @@ import ReviewCard from '../../components/shared/ReviewCard'
 import { getSkillColor } from '../../utils/helpers'
 import {
   Edit3, Save, X, Plus, Star, MapPin, Globe, Github, Linkedin,
-  Briefcase, Award, User, Trash2, Link as LinkIcon, Camera
+  Briefcase, Award, User, Trash2, Link as LinkIcon, Camera,
+  Heart, Share2, MessageSquare, Send
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -58,6 +59,12 @@ export default function ProfilePage() {
   // Portfolio modal states
   const [addPortfolioModal, setAddPortfolioModal] = useState(false)
   const [portfolioForm, setPortfolioForm] = useState({ title: '', description: '', projectLink: '', skillsUsed: '' })
+
+  // Public profile states
+  const [isSaved, setIsSaved] = useState(false)
+  const [hireModalOpen, setHireModalOpen] = useState(false)
+  const [proposalForm, setProposalForm] = useState({ projectTitle: '', description: '', bidAmount: '', email: me?.email || '' })
+  const [sendingProposal, setSendingProposal] = useState(false)
 
   useEffect(() => {
     if (profile) {
@@ -196,6 +203,58 @@ export default function ProfilePage() {
     return pct;
   }
 
+  const handleSaveFreelancer = () => {
+    if (!me) {
+      return toast.error("Please log in to save freelancers");
+    }
+    setIsSaved(prev => {
+      const next = !prev;
+      toast.success(next ? "Freelancer added to saved list! ❤️" : "Freelancer removed from saved list.");
+      return next;
+    });
+  }
+
+  const handleShareProfile = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Profile link copied to clipboard! 🔗");
+  }
+
+  const handleHireMeClick = () => {
+    if (!me) {
+      return toast.error("Please log in to contact/hire this freelancer");
+    }
+    if (me.role !== 'client') {
+      return toast.error("Only client accounts can send hiring proposals");
+    }
+    setHireModalOpen(true);
+  }
+
+  const handleSendProposal = async (e) => {
+    e.preventDefault();
+    if (!proposalForm.projectTitle.trim() || !proposalForm.description.trim() || !proposalForm.bidAmount) {
+      return toast.error("Please fill in all required fields");
+    }
+
+    setSendingProposal(true);
+    try {
+      const res = await applicationsAPI.hirePropose({
+        freelancerId: profile?.user?._id || profile?.user?.id,
+        projectTitle: proposalForm.projectTitle,
+        description: proposalForm.description,
+        bidAmount: Number(proposalForm.bidAmount)
+      })
+      if (res.success) {
+        toast.success("Hiring proposal invitation sent successfully! 🚀");
+        setHireModalOpen(false);
+        setProposalForm({ projectTitle: '', description: '', bidAmount: '', email: me?.email || '' });
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to send proposal");
+    } finally {
+      setSendingProposal(false);
+    }
+  }
+
   const Layout = isMyProfile ? DashboardLayout : PublicLayout
 
   const avgRating = reviews?.length
@@ -210,6 +269,11 @@ export default function ProfilePage() {
         <div className="space-y-4">
           <Skeleton className="h-48 rounded-2xl" />
           <Skeleton className="h-32 rounded-2xl" />
+        </div>
+      ) : !profile ? (
+        <div className="text-center py-20 text-white/50 space-y-4">
+          <p className="text-lg">Profile not found 🔍</p>
+          <p className="text-sm">The user profile you are looking for does not exist or may have been deleted.</p>
         </div>
       ) : (
         <div className="max-w-4xl space-y-6">
@@ -285,7 +349,7 @@ export default function ProfilePage() {
                         <span className="text-brand-400 font-medium text-lg capitalize">{profile?.user?.role || me?.role}</span>
                       </h1>
                       {profile?.tagline && (
-                        <p className="text-white/60 font-medium text-sm mt-1">{profile.tagline}</p>
+                        <p className="text-white/60 font-medium text-sm mt-1">{profile?.tagline}</p>
                       )}
                     </div>
                   )}
@@ -319,7 +383,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {isMyProfile && (
+              {isMyProfile ? (
                 <div className="flex gap-2">
                   {editing ? (
                     <>
@@ -333,6 +397,20 @@ export default function ProfilePage() {
                   ) : (
                     <button onClick={() => setEditing(true)} className="btn-secondary flex items-center gap-1.5 text-sm px-4 py-2">
                       <Edit3 size={15} /> Edit Profile
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <button onClick={handleSaveFreelancer} className={`btn-secondary flex items-center gap-1.5 text-sm px-4 py-2 ${isSaved ? 'text-brand-400 border-brand-500/35 bg-brand-500/5' : ''}`}>
+                    <Heart size={15} className={isSaved ? 'fill-brand-400 text-brand-400' : ''} /> {isSaved ? 'Saved' : 'Save'}
+                  </button>
+                  <button onClick={handleShareProfile} className="btn-secondary flex items-center gap-1.5 text-sm px-4 py-2">
+                    <Share2 size={15} /> Share
+                  </button>
+                  {profile?.user?.role === 'freelancer' && (
+                    <button onClick={handleHireMeClick} className="btn-primary flex items-center gap-1.5 text-sm px-4 py-2">
+                      <MessageSquare size={15} /> Hire Me
                     </button>
                   )}
                 </div>
@@ -352,7 +430,7 @@ export default function ProfilePage() {
                     <span className="text-white/40 text-sm">/hr</span>
                   </div>
                 ) : (
-                  <span className="text-white font-semibold">${profile.hourlyRate}/hr</span>
+                  <span className="text-white font-semibold">${profile?.hourlyRate}/hr</span>
                 )}
               </div>
             )}
@@ -430,9 +508,9 @@ export default function ProfilePage() {
                     </div>
                   ) : (
                     <div className="flex gap-3 flex-wrap">
-                      {profile?.website && <a href={profile.website} target="_blank" rel="noopener noreferrer" className="btn-ghost flex items-center gap-1.5 text-sm"><Globe size={14} /> Website</a>}
-                      {profile?.github && <a href={profile.github} target="_blank" rel="noopener noreferrer" className="btn-ghost flex items-center gap-1.5 text-sm"><Github size={14} /> GitHub</a>}
-                      {profile?.linkedin && <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="btn-ghost flex items-center gap-1.5 text-sm"><Linkedin size={14} /> LinkedIn</a>}
+                      {profile?.website && <a href={profile?.website} target="_blank" rel="noopener noreferrer" className="btn-ghost flex items-center gap-1.5 text-sm"><Globe size={14} /> Website</a>}
+                      {profile?.github && <a href={profile?.github} target="_blank" rel="noopener noreferrer" className="btn-ghost flex items-center gap-1.5 text-sm"><Github size={14} /> GitHub</a>}
+                      {profile?.linkedin && <a href={profile?.linkedin} target="_blank" rel="noopener noreferrer" className="btn-ghost flex items-center gap-1.5 text-sm"><Linkedin size={14} /> LinkedIn</a>}
                     </div>
                   )}
                 </div>
@@ -540,6 +618,83 @@ export default function ProfilePage() {
           )}
         </div>
       )}
+      <AnimatePresence>
+        {hireModalOpen && (
+          <Modal open={hireModalOpen} onClose={() => setHireModalOpen(false)} title={`Hire ${profile?.user?.name || profile?.user?.username || 'Freelancer'}`}>
+            <form onSubmit={handleSendProposal} className="space-y-4">
+              <div>
+                <label className="label">Project Title / Name *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Redesign Landing Page"
+                  value={proposalForm.projectTitle}
+                  onChange={e => setProposalForm({ ...proposalForm, projectTitle: e.target.value })}
+                  className="input-field"
+                />
+              </div>
+
+              <div>
+                <label className="label">Project Description & Details *</label>
+                <textarea
+                  rows={4}
+                  required
+                  placeholder="Describe your project, technologies, timelines, and deliverables..."
+                  value={proposalForm.description}
+                  onChange={e => setProposalForm({ ...proposalForm, description: e.target.value })}
+                  className="input-field resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="label flex items-center gap-1">
+                    <DollarSign size={13} className="text-brand-400" /> Proposed Budget *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="500"
+                    value={proposalForm.bidAmount}
+                    onChange={e => setProposalForm({ ...proposalForm, bidAmount: e.target.value })}
+                    className="input-field"
+                    min={1}
+                  />
+                </div>
+                <div>
+                  <label className="label flex items-center gap-1">
+                    <Mail size={13} className="text-brand-400" /> Contact Email *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={proposalForm.email}
+                    onChange={e => setProposalForm({ ...proposalForm, email: e.target.value })}
+                    className="input-field text-white/50"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setHireModalOpen(false)}
+                  className="btn-secondary flex-1"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={sendingProposal}
+                  className="btn-primary flex-1 flex items-center justify-center gap-2"
+                >
+                  {sendingProposal ? 'Sending...' : <><Send size={14} /> Send Proposal</>}
+                </button>
+              </div>
+            </form>
+          </Modal>
+        )}
+      </AnimatePresence>
     </Layout>
   )
 }

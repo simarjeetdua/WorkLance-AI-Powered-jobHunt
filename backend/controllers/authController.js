@@ -70,6 +70,7 @@ export const registerUser = async (req, res) => {
       token,
       user: {
         id: user._id,
+        _id: user._id,
         username: user.username,
         name: user.name || user.username,
         email: user.email,
@@ -140,6 +141,7 @@ export const loginUser = async (req, res) => {
       token,
       user: {
         id: user._id,
+        _id: user._id,
         username: user.username,
         name: user.name || user.username,
         email: user.email,
@@ -174,7 +176,15 @@ export const getCurrentUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      user,
+      user: {
+        id: user._id,
+        _id: user._id,
+        username: user.username,
+        name: user.name || user.username,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar || "",
+      },
     });
 
   } catch (error) {

@@ -19,7 +19,7 @@ export const getJobRecommendations = async (req, res) => {
     const freelancerSkills = profile.skills || [];
 
     // Get all open jobs
-    const jobs = await Job.find({ status: "open" });
+    const jobs = await Job.find({ status: "open" }).populate("client", "username name email role avatar");
 
     // Calculate score for each job
     const scoredJobs = jobs.map((job) => {

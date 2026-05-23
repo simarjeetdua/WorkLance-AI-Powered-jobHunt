@@ -1,7 +1,7 @@
 import { User } from "../models/User.model.js";
-import job from '../models/Job.model.js';
+import Job from '../models/Job.model.js';
 import Escrow from '../models/Escrow.model.js';
-import transaction from '../models/Transaction.model.js';
+import Transaction from '../models/Transaction.model.js';
 import Review from '../models/Review.model.js';
 
 
@@ -10,16 +10,16 @@ export const analyticsDashboard = async(req,res)=>{
     try {
         //user analytics
         const totalUsers = await User.countDocuments();
-        const activeUsers = await User.countDocuments({status: 'active'});
-        const suspendedUsers = await User.countDocuments({status: 'suspended'});
+        const activeUsers = await User.countDocuments({isActive: true});
+        const suspendedUsers = await User.countDocuments({isActive: false});
         const totalClients = await User.countDocuments({role: 'client'});
         const totalFreelancers = await User.countDocuments({role: 'freelancer'});
         const Isactive = await User.countDocuments({isActive: true}); 
 
         //job analtics
-        const totalJobs = await job.countDocuments();
-        const openJobs = await job.countDocuments({status: 'open'});
-        const completedJobs = await job.countDocuments({status: 'completed'});
+        const totalJobs = await Job.countDocuments();
+        const openJobs = await Job.countDocuments({status: 'open'});
+        const completedJobs = await Job.countDocuments({status: 'completed'});
 
         //financial analytics
         const totalEscrowAmount = await Escrow.aggregate([
@@ -30,7 +30,7 @@ export const analyticsDashboard = async(req,res)=>{
                 }
             }
         ]);
-        const totalRevenue = await transaction.aggregate([
+        const totalRevenue = await Transaction.aggregate([
             { $match:{status: 'success'}},
             { $group: {_id: null, totalRevenue: {$sum: '$amount'}}}
         ]);
@@ -39,7 +39,7 @@ export const analyticsDashboard = async(req,res)=>{
             $group:{_id: null, averageRating: {$avg: '$rating'}}
         }]);
         //trending skills
-        const trendingSkills = await job.aggregate([
+        const trendingSkills = await Job.aggregate([
       { $unwind: "$requiredSkills" },
       {
         $group: {

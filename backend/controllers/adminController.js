@@ -1,7 +1,6 @@
 import { User } from "../models/User.model.js";
 import Analytics from "../models/Analytics.model.js";
-import job from '../models/Job.model.js';
-import { use } from "react";
+import Job from '../models/Job.model.js';
 
 //get all users
 export const getAllUsers = async (req,res)=>{
@@ -53,10 +52,10 @@ export const UserStatus = async(req,res)=>{
         const user = await User.findById(userId);
         if(!user)
         {
-            res.status(404).json({
+            return res.status(404).json({
                 message: 'user not found',
                 success: false,
-            })
+            });
         }
         user.isActive = !user.isActive;
         await user.save();
@@ -76,7 +75,7 @@ export const UserStatus = async(req,res)=>{
 //get all jobs
 export const GetAllJobs = async(req,res)=>{
     try {
-        const jobs = await job.find().populate('client', 'username name email role avatar');
+        const jobs = await Job.find().populate('client', 'username name email role avatar');
         res.status(200).json({
             success: true,
             message: 'jobs fetched successfully',
@@ -95,8 +94,8 @@ export const GetAllJobs = async(req,res)=>{
 export const deleteJob = async(req,res)=>{
     try {
         const JobId = req.params.jobId;
-        const job = await job.findByIdAndDelete(JobId);
-        if(!job)
+        const deletedJob = await Job.findByIdAndDelete(JobId);
+        if(!deletedJob)
         {
             return res.status(404).json({
                 message: 'job not found',
