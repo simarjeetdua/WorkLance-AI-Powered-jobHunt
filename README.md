@@ -77,7 +77,7 @@ Cashfree / Stripe / PayPal
 
 ⚙️ Installation & Setup
 1️⃣ Clone Repository
-git clone https://github.com/your-username/worklance.git
+git clone (https://github.com/simarjeetdua/WorkLance-AI-Powered-jobHunt.git)
 
 2️⃣ Navigate to Project Folder
 cd worklance
