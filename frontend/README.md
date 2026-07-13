@@ -74,12 +74,23 @@ src/
 
 ## 🔌 API Base URL
 
-Set in `src/services/api.js`:
-```js
-const API = axios.create({ baseURL: 'http://localhost:5000/api' })
+The frontend uses an environment variable for the backend URL.
+
+Create a `.env` file in the `frontend` directory:
+
+```env
+VITE_API_URL=https://your-backend-url.onrender.com
 ```
 
-Change to your backend URL before deploying.
+In `src/services/api.js`:
+
+```js
+const API = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+});
+```
+
+For production (Vercel), add the same `VITE_API_URL` environment variable in your Vercel project settings.
 
 ## ✨ Design System
 
